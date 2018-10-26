@@ -158,6 +158,12 @@ export default {
     height: 0;
     left: 50%;
     top: 5vh;
+
+    &:after {
+      content: "";
+      position: fixed;
+      background: rgba(0, 0, 0, 0.5);
+    }
   }
 
   .v-tour {
