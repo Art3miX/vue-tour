@@ -192,7 +192,7 @@ export default {
     z-index: 99999;
 
     &.v-step-sticky {
-      position: absolute;
+      position: fixed !important;
       left: 0;
       right: 0;
       width: 50vw;
