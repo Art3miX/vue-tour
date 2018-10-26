@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { DEFAULT_CALLBACKS, DEFAULT_OPTIONS, KEYS, HIGHLIGHT } from '../shared/constants'
+import { DEFAULT_CALLBACKS, DEFAULT_OPTIONS, KEYS, HIGHLIGHT, STICKY } from '../shared/constants'
 
 export default {
   name: 'v-tour',
@@ -125,6 +125,7 @@ export default {
     stop () {
       this.customCallbacks.onStop()
       document.body.classList.remove(HIGHLIGHT.ACTIVE_TOUR)
+      document.getElementById(STICKY.ID).remove()
       this.currentStep = -1
     },
     handleKeyup (e) {
@@ -151,6 +152,20 @@ export default {
     pointer-events: none;
   }
 
+  #v-tour-sticky {
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: 50%;
+    top: 5vh;
+
+    &:after {
+      content: "";
+      position: fixed;
+      background: rgba(0, 0, 0, 0.5);
+    }
+  }
+
   .v-tour {
     pointer-events: auto;
   }
@@ -158,18 +173,17 @@ export default {
   .v-tour-highlight {
     pointer-events: auto;
     z-index: 9999;
+  }
 
-    @media screen and (min-width: 2000px) {
-      box-shadow: 0 0 0 5000px rgba(0, 0, 0, .6) !important;
-    }
-
-    @media screen and (max-width: 2000px) {
-      box-shadow: 0 0 0 2000px rgba(0, 0, 0, .6) !important;
-    }
-
-    @media screen and (max-width: 1000px) {
-      box-shadow: 0 0 0 1000px rgba(0, 0, 0, .6) !important;
-    }
+  .v-tour-highlight:after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    box-shadow: 0 0 50px 25px rgba(0, 0, 0, 0.5);
+    width: calc(100% + 10px);
+    height: calc(100% + 10px);
+    left: -5px;
+    top: -5px;
   }
 
   .v-tour-position {
