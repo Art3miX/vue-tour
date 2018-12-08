@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { DEFAULT_CALLBACKS, DEFAULT_OPTIONS, KEYS, HIGHLIGHT, STICKY } from '../shared/constants'
+import { DEFAULT_CALLBACKS, DEFAULT_OPTIONS, KEYS, HIGHLIGHT } from '../shared/constants'
 
 export default {
   name: 'v-tour',
@@ -125,7 +125,6 @@ export default {
     stop () {
       this.customCallbacks.onStop()
       document.body.classList.remove(HIGHLIGHT.ACTIVE_TOUR)
-      document.getElementById(STICKY.ID).remove()
       this.currentStep = -1
     },
     handleKeyup (e) {
@@ -150,20 +149,6 @@ export default {
 <style lang="scss">
   body.v-tour-active {
     pointer-events: none;
-  }
-
-  #v-tour-sticky {
-    position: absolute;
-    width: 0;
-    height: 0;
-    left: 50%;
-    top: 5vh;
-
-    &:after {
-      content: "";
-      position: fixed;
-      background: rgba(0, 0, 0, 0.5);
-    }
   }
 
   .v-tour {
