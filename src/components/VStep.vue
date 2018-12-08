@@ -30,7 +30,7 @@
 import Popper from 'popper.js'
 import jump from 'jump.js'
 import sum from 'hash-sum'
-import { DEFAULT_STEP_OPTIONS, HIGHLIGHT, STICKY } from '../shared/constants'
+import { DEFAULT_STEP_OPTIONS, HIGHLIGHT } from '../shared/constants'
 
 export default {
   name: 'v-step',
@@ -89,45 +89,37 @@ export default {
       // TODO: debug mode
       // console.log('[Vue Tour] The target element ' + this.step.target + ' of .v-step[id="' + this.hash + '"] is:', targetElement)
 
-      if (this.isSticky) {
-        this.targetElement = document.getElementById(STICKY.ID)
+      if (!this.isSticky) {
+        if (this.targetElement) {
+          if (this.params.enableScrolling) {
+            if (this.step.duration || this.step.offset) {
+              let jumpOptions = {
+                duration: this.step.duration || 1000,
+                offset: this.step.offset || 0,
+                callback: undefined,
+                a11y: false
+              }
 
-        if (!this.targetElement) {
-          const newDiv = document.createElement('div')
-          newDiv.id = STICKY.ID
-
-          this.targetElement = document.body.appendChild(newDiv)
-        }
-      }
-
-      if (this.targetElement) {
-        if (this.params.enableScrolling) {
-          if (this.step.duration || this.step.offset) {
-            let jumpOptions = {
-              duration: this.step.duration || 1000,
-              offset: this.step.offset || 0,
-              callback: undefined,
-              a11y: false
+              jump(this.targetElement, jumpOptions)
+            } else {
+              // Use the native scroll by default if no scroll options has been defined
+              this.targetElement.scrollIntoView({ behavior: 'smooth' })
             }
-
-            jump(this.targetElement, jumpOptions)
-          } else {
-            // Use the native scroll by default if no scroll options has been defined
-            this.targetElement.scrollIntoView({ behavior: 'smooth' })
           }
+
+          this.createHighlight()
+
+          /* eslint-disable no-new */
+          new Popper(
+            this.targetElement,
+            this.$refs['v-step-' + this.hash],
+            this.params
+          )
+        } else {
+          console.error('[Vue Tour] The target element ' + this.step.target + ' of .v-step[id="' + this.hash +
+              '"] does not exist!')
+          this.$emit('targetNotFound', this.step)
         }
-
-        this.createHighlight()
-
-        /* eslint-disable no-new */
-        new Popper(
-          this.targetElement,
-          this.$refs['v-step-' + this.hash],
-          this.params
-        )
-      } else {
-        console.error('[Vue Tour] The target element ' + this.step.target + ' of .v-step[id="' + this.hash + '"] does not exist!')
-        this.$emit('targetNotFound', this.step)
       }
     },
     checkHightlight () {
@@ -193,14 +185,26 @@ export default {
 
     &.v-step-sticky {
       position: fixed !important;
-      left: 0;
-      right: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 5vh;
       width: 50vw;
       max-width: 90vw;
 
       & .v-step__arrow {
         opacity: 0;
         display: none;
+      }
+
+      &:before {
+        content: "";
+        box-shadow: 0 0 0 calc(100vh + 100vw) rgba(0, 0, 0, 0.25);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        z-index: -1;
       }
     }
   }
