@@ -113,7 +113,9 @@ export default {
           new Popper(
             this.targetElement,
             this.$refs['v-step-' + this.hash],
-            this.params
+            { ...DEFAULT_STEP_OPTIONS,
+              ...this.step.params
+            }
           )
         } else {
           console.error('[Vue Tour] The target element ' + this.step.target + ' of .v-step[id="' + this.hash +
