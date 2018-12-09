@@ -147,7 +147,7 @@ export default {
       }
     },
     removeHighlight () {
-      if (this.checkHightlight()) {
+      if (this.checkHightlight() && !this.isSticky) {
         const target = this.targetElement
         const currTransition = this.targetElement.style.transition
 
